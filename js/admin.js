@@ -81,8 +81,8 @@ async function loadCatalog() {
     }
 
     emptyState.style.display = 'none';
-    const glbCount = models.filter(m => m.format === 'GLB' || m.format === 'GLTF').length;
-    const stlCount = models.filter(m => m.format === 'STL').length;
+    const glbCount = models.filter(m => String(m.format).startsWith('GLB') || m.format === 'GLTF').length;
+    const stlCount = models.filter(m => String(m.format).includes('Arena') || m.format === 'STL').length;
     updateStats(models.length, glbCount, stlCount);
 
     grid.innerHTML = '';
