@@ -10,13 +10,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
 
-  <!-- Soporte para WebXR y Model Viewer (Google AR) -->
-  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+  <!-- Soporte para WebXR y Model Viewer v4.1.0 (Google AR) -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.1.0/model-viewer.min.js"></script>
   <script src="js/qrcode.min.js"></script>
 </head>
 <body>
 
-  <div class="viewer-wrapper">
+  <div id="viewer-wrapper" class="viewer-wrapper">
+    <!-- Video en vivo de la cámara trasera para Realidad Aumentada Universal -->
+    <video id="ar-camera-video" class="ar-camera-video" autoplay playsinline muted></video>
+
     <!-- Pantalla de Carga Inicial -->
     <div id="loader-overlay" class="loader-overlay">
       <div class="spinner"></div>
@@ -36,54 +39,56 @@
         <span id="model-format-badge" class="badge">3D</span>
       </div>
 
-      <!-- Banner de recomendación para dispositivos Samsung / Android -->
-      <div id="samsung-browser-banner" class="samsung-banner" style="display: none;">
-        <span>📱 Samsung Internet detectado. Para mejor colocación AR: </span>
-        <a id="btn-open-chrome" href="#" class="samsung-banner-link">Abrir en Chrome ↗</a>
-      </div>
+      <!-- Botón para cerrar el modo Cámara RA -->
+      <button id="btn-close-camera-ar" class="btn-close-ar" style="display: none;">
+        ✕ Salir de RA
+      </button>
     </div>
 
-    <!-- Componente Model-Viewer oficial para 3D y Realidad Aumentada -->
-    <model-viewer 
-      id="ar-model-viewer"
-      ar
-      ar-modes="scene-viewer webxr quick-look"
-      ar-scale="auto"
-      ar-placement="floor"
-      environment-image="neutral"
-      shadow-intensity="1.2"
-      shadow-softness="0.8"
-      exposure="1.0"
-      bounds="tight"
-      quick-look-browsers="safari chrome"
-      camera-controls
-      touch-action="pan-y"
-      auto-rotate
-      rotation-per-second="15deg">
+    <!-- Contenedor transformable para mover y escalar el modelo sobre la cámara -->
+    <div id="ar-model-stage" class="ar-model-stage">
+      <model-viewer 
+        id="ar-model-viewer"
+        ar
+        ar-modes="webxr scene-viewer quick-look"
+        ar-scale="auto"
+        ar-placement="floor"
+        environment-image="neutral"
+        shadow-intensity="1.4"
+        shadow-softness="0.7"
+        exposure="1.05"
+        bounds="tight"
+        min-camera-orbit="auto 0deg auto"
+        max-camera-orbit="auto 90deg auto"
+        quick-look-browsers="safari chrome"
+        interpolation-decay="1"
+        camera-controls
+        touch-action="none"
+        auto-rotate
+        rotation-per-second="15deg">
+        <!-- Ocultar botón interno por defecto de model-viewer para usar nuestro lanzador híbrido -->
+        <span slot="ar-button" style="display: none;"></span>
+      </model-viewer>
 
-      <!-- Botón de Realidad Aumentada slotted para control de gestos nativo -->
-      <button slot="ar-button" id="btn-launch-ar" class="btn-ar">
-        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-          <line x1="12" y1="22.08" x2="12" y2="12"></line>
-        </svg>
-        <span>Ver en tu espacio (AR)</span>
-      </button>
+      <!-- Capa táctil para arrastrar el modelo en el piso cuando está activo el modo "Mover" -->
+      <div id="ar-drag-layer" class="ar-drag-layer" style="display: none;"></div>
+    </div>
 
-      <!-- Guía interactiva durante la sesión de Realidad Aumentada (WebXR) -->
-      <div slot="ar-prompt" id="ar-prompt" class="ar-session-prompt">
-        <div class="ar-pulse-icon">📍</div>
-        <div class="ar-prompt-title">Apunta al suelo y mueve el celular</div>
-        <div class="ar-prompt-subtitle">Toca la pantalla cuando aparezca el círculo para fijar el modelo</div>
+    <!-- Botón Principal de Realidad Aumentada (Vista Previa) -->
+    <button type="button" id="btn-launch-ar" class="btn-ar">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+        <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+        <line x1="12" y1="22.08" x2="12" y2="12"></line>
+      </svg>
+      <span>Ver en tu espacio (AR)</span>
+    </button>
+
+    <!-- Guía táctil flotante cuando la Cámara RA está activa (sin botones de cambio de modo) -->
+    <div id="camera-ar-hud" class="camera-ar-hud" style="display: none; pointer-events: none;">
+      <div class="ar-hud-hint" id="ar-hud-hint">
+        ✋ 1 dedo en objeto: Mover • 🔄 2 dedos (o 1 afuera): Girar • 🤏 Pellizcar: Escalar • Doble toque: Centrar
       </div>
-    </model-viewer>
-
-    <!-- Acceso alternativo a Google Scene Viewer si el navegador tiene bloqueos -->
-    <div id="android-native-bar" class="android-native-bar" style="display: none;">
-      <a id="btn-android-intent" href="#" class="btn-scene-viewer">
-        <span>🚀 Abrir directamente en Google Scene Viewer</span>
-      </a>
     </div>
   </div>
 
@@ -103,6 +108,6 @@
 
   <!-- Scripts -->
   <script src="js/config.js"></script>
-  <script src="js/viewer.js"></script>
+  <script src="js/viewer.js?v=6dof"></script>
 </body>
 </html>
