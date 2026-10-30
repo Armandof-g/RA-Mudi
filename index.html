@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR 3D Viewer Hub - Panel de Control</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Modal de Autenticación por PIN -->
+  <div id="pin-modal" class="pin-modal-overlay">
+    <div class="pin-card">
+      <div class="pin-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <h2 class="pin-title">Panel de Administración</h2>
+      <p class="pin-desc">Ingresa tu clave de acceso para ver la lista de modelos y descargar sus códigos QR.</p>
+      
+      <div class="pin-input-group">
+        <input type="password" id="pin-input" class="pin-input" maxlength="8" placeholder="••••" autocomplete="off" autofocus>
+      </div>
+      
+      <button id="pin-submit" class="btn btn-primary" style="width: 100%;">
+        Desbloquear Panel
+      </button>
+      
+      <div id="pin-error" class="pin-error"></div>
+    </div>
+  </div>
+
+  <!-- Contenedor Principal del Panel -->
+  <div class="container">
+    <header class="header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+            <line x1="12" y1="22.08" x2="12" y2="12"></line>
+          </svg>
+        </div>
+        <div>
+          <h1 class="brand-title">AR 3D Viewer Hub</h1>
+          <p class="brand-subtitle">Gestor de enlaces y códigos QR de Realidad Aumentada</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <button id="logout-btn" class="btn btn-secondary btn-sm" title="Bloquear panel">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
+          Bloquear
+        </button>
+      </div>
+    </header>
+
+    <!-- Resumen de Estadísticas -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <div class="stat-icon">📦</div>
+        <div>
+          <div class="stat-label">Total de Modelos</div>
+          <div class="stat-value" id="stat-total">0</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon" style="color: var(--accent);">🌐</div>
+        <div>
+          <div class="stat-label">Modelos GLB / GLTF</div>
+          <div class="stat-value" id="stat-glb">0</div>
+        </div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-icon" style="color: var(--sand);">📐</div>
+        <div>
+          <div class="stat-label">Modelos STL (Color Arena)</div>
+          <div class="stat-value" id="stat-stl">0</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grid de Modelos con sus Códigos QR -->
+    <div class="models-grid" id="models-grid">
+      <!-- Estado Vacío por si no hay modelos aún -->
+      <div class="empty-state" id="empty-state" style="display: none;">
+        <div class="empty-icon">📁</div>
+        <h3 class="empty-title">Aún no hay modelos en la carpeta</h3>
+        <p class="empty-desc">
+          Coloca tus archivos <code>.stl</code> o <code>.glb</code> dentro de la carpeta <code>models/</code> del proyecto.
+          Al subir tus cambios a GitHub, la web los detectará y creará sus códigos QR automáticamente.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Librería local para generación de Códigos QR -->
+  <script src="js/qrcode.min.js"></script>
+  <!-- Scripts de la aplicación -->
+  <script src="js/config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

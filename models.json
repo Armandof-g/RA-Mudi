@@ -1,0 +1,46 @@
+[
+  {
+    "id": "Y3V0ZS13b2IuZ2xi",
+    "filename": "cute-wob.glb",
+    "title": "Cute Wob - Fátima Nevárez",
+    "format": "GLB",
+    "realScale": "45 cm",
+    "size": 2070776,
+    "sizeFormatted": "2 MB",
+    "updatedAt": "2026-10-29T22:58:38.181Z",
+    "path": "models/cute-wob.glb"
+  },
+  {
+    "id": "bmVzc2llLmdsYg",
+    "filename": "nessie.glb",
+    "title": "Nessie - Kenia Burgos",
+    "format": "GLB",
+    "realScale": "75 cm",
+    "size": 7973264,
+    "sizeFormatted": "7.6 MB",
+    "updatedAt": "2026-10-29T22:58:25.259Z",
+    "path": "models/nessie.glb"
+  },
+  {
+    "id": "bWFyaWFuYS1jZWxpei5nbGI",
+    "filename": "mariana-celiz.glb",
+    "title": "Mobiliario - Mariana Celiz",
+    "format": "STL / Arena",
+    "realScale": "65 cm",
+    "size": 52532,
+    "sizeFormatted": "51.3 KB",
+    "updatedAt": "2026-10-30T00:32:42.228Z",
+    "path": "models/mariana-celiz.glb"
+  },
+  {
+    "id": "YWRyaWFuLWNlc3BlZGVzLmdsYg",
+    "filename": "adrian-cespedes.glb",
+    "title": "Mobiliario 3D - Adrián Céspedes",
+    "format": "STL / Arena",
+    "realScale": "65 cm",
+    "size": 222712,
+    "sizeFormatted": "217.5 KB",
+    "updatedAt": "2026-10-29T22:41:43.722Z",
+    "path": "models/adrian-cespedes.glb"
+  }
+]
