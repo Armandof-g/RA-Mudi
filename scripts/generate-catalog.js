@@ -17,25 +17,25 @@ const canonicalModels = [
   {
     filename: 'cute-wob.glb',
     title: 'Cute Wob - Fátima Nevárez',
-    format: 'GLB',
-    realScale: '75 cm'
+    format: 'GLB • Rosa',
+    realScale: '110 cm'
   },
   {
     filename: 'nessie.glb',
     title: 'Nessie - Kenia Burgos',
-    format: 'GLB',
-    realScale: '75 cm'
+    format: 'GLB • Turquesa',
+    realScale: '100 cm'
   },
   {
     filename: 'mariana-celiz.glb',
     title: 'Mobiliario - Mariana Celiz',
-    format: 'STL / Arena',
+    format: 'GLB • Arena',
     realScale: '65 cm'
   },
   {
     filename: 'adrian-cespedes.glb',
     title: 'Mobiliario 3D - Adrián Céspedes',
-    format: 'STL / Arena',
+    format: 'GLB • Arena',
     realScale: '65 cm'
   }
 ];
