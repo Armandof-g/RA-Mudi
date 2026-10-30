@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Visor 3D y Realidad Aumentada</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Soporte para WebXR y Model Viewer (Google AR) -->
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
+
+  <!-- Three.js y cargadores para STL -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/STLLoader.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/exporters/GLTFExporter.js"></script>
+  <script src="js/qrcode.min.js"></script>
+</head>
+<body>
+
+  <div class="viewer-wrapper">
+    <!-- Pantalla de Carga Inicial -->
+    <div id="loader-overlay" class="loader-overlay">
+      <div class="spinner"></div>
+      <div id="loader-text" class="loader-text">Cargando modelo 3D...</div>
+    </div>
+
+    <!-- Barra Superior Flotante -->
+    <div class="viewer-topbar">
+      <div class="model-info-pill">
+        <a href="index.html" class="btn btn-secondary btn-sm" style="padding: 0.25rem 0.5rem;" title="Volver al panel">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="19" y1="12" x2="5" y2="12"></line>
+            <polyline points="12 19 5 12 12 5"></polyline>
+          </svg>
+        </a>
+        <span id="model-display-name" class="pill-title">Cargando...</span>
+        <span id="model-format-badge" class="badge">3D</span>
+      </div>
+
+      <!-- Banner de recomendación para dispositivos Samsung / Android -->
+      <div id="samsung-browser-banner" class="samsung-banner" style="display: none;">
+        <span>📱 Samsung Internet detectado. Para mejor colocación AR: </span>
+        <a id="btn-open-chrome" href="#" class="samsung-banner-link">Abrir en Chrome ↗</a>
+      </div>
+    </div>
+
+    <!-- Panel de Ajuste y Orientación (Exclusivo para archivos STL) -->
+    <div id="stl-panel" class="stl-controls-panel" style="display: none;">
+      <div class="stl-badge-notice">
+        <span>🏺</span>
+        <span>Modelo STL (Color Arena)</span>
+      </div>
+      <div>
+        <div class="control-label">
+          <span>Escala AR:</span>
+          <span id="scale-value-label">1.0x (~65 cm)</span>
+        </div>
+        <input type="range" id="scale-slider" class="control-slider" min="0.2" max="3.0" step="0.1" value="1.0">
+      </div>
+
+      <!-- Ajuste interactivo de Orientación 3D -->
+      <div class="stl-orientation-box">
+        <div class="control-label">
+          <span>Orientación 3D:</span>
+          <span id="current-rotation-label">0°, 0°, 0°</span>
+        </div>
+        <div class="orientation-btn-grid">
+          <button type="button" class="btn-rot" id="btn-rot-x" title="Girar 90° en eje X">X +90°</button>
+          <button type="button" class="btn-rot" id="btn-rot-y" title="Girar 90° en eje Y">Y +90°</button>
+          <button type="button" class="btn-rot" id="btn-rot-z" title="Girar 90° en eje Z">Z +90°</button>
+          <button type="button" class="btn-rot btn-rot-reset" id="btn-rot-reset" title="Restablecer orientación">↺</button>
+        </div>
+        <button type="button" id="btn-save-orientation" class="btn-save-orient">
+          <span>💾 Guardar para AR</span>
+        </button>
+        <div id="orientation-save-status" class="orient-save-status"></div>
+      </div>
+    </div>
+
+    <!-- Componente Model-Viewer oficial para 3D y Realidad Aumentada -->
+    <model-viewer 
+      id="ar-model-viewer"
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      ar-scale="fixed"
+      ar-placement="floor"
+      environment-image="neutral"
+      shadow-intensity="1.2"
+      shadow-softness="0.8"
+      exposure="1.0"
+      bounds="tight"
+      quick-look-browsers="safari chrome"
+      camera-controls
+      touch-action="pan-y"
+      auto-rotate
+      rotation-per-second="15deg">
+
+      <!-- Botón de Realidad Aumentada slotted para control de gestos nativo -->
+      <button slot="ar-button" id="btn-launch-ar" class="btn-ar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+        </svg>
+        <span>Ver en tu espacio (AR)</span>
+      </button>
+
+      <!-- Guía interactiva durante la sesión de Realidad Aumentada (WebXR) -->
+      <div id="ar-prompt" class="ar-session-prompt">
+        <div class="ar-pulse-icon">📍</div>
+        <div class="ar-prompt-title">Apunta al suelo y TOCA la pantalla</div>
+        <div class="ar-prompt-subtitle">Mueve el celular suavemente para fijar el modelo</div>
+      </div>
+    </model-viewer>
+
+    <!-- Acceso alternativo a Google Scene Viewer si el navegador tiene bloqueos -->
+    <div id="android-native-bar" class="android-native-bar" style="display: none;">
+      <a id="btn-android-intent" href="#" class="btn-scene-viewer">
+        <span>🚀 ¿Problemas al ver? Abrir en Google Scene Viewer</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Modal para cuando se intenta ver en AR desde una computadora -->
+  <div id="desktop-qr-modal" class="pin-modal-overlay hidden">
+    <div class="pin-card" style="max-width: 340px;">
+      <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 0.5rem;">Ver en Realidad Aumentada</h3>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 1rem;">
+        Escanea este código con la cámara de tu celular (Android o iPhone) para proyectar el modelo en tu espacio real:
+      </p>
+      <div style="background: #fff; padding: 1rem; border-radius: 12px; display: inline-block; margin-bottom: 1.25rem;">
+        <div id="desktop-qr-box"></div>
+      </div>
+      <button id="close-desktop-qr" class="btn btn-secondary" style="width: 100%;">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/config.js"></script>
+  <script src="js/viewer.js"></script>
+</body>
+</html>
