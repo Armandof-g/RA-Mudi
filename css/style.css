@@ -598,12 +598,12 @@ model-viewer {
 
 .btn-ar {
   position: absolute;
-  bottom: 3.8rem;
+  bottom: 2.2rem;
   left: 50%;
   transform: translateX(-50%);
   width: calc(100% - 3rem);
   max-width: 320px;
-  padding: 0.9rem 1.4rem;
+  padding: 0.95rem 1.5rem;
   font-size: 1.05rem;
   font-weight: 700;
   border-radius: 9999px;
@@ -611,7 +611,7 @@ model-viewer {
   color: #ffffff;
   border: none;
   cursor: pointer;
-  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.4);
+  box-shadow: 0 8px 25px rgba(56, 189, 248, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -888,3 +888,161 @@ model-viewer[ar-status="object-placed"] #ar-prompt {
   from { opacity: 0; transform: translateY(-4px); }
   to { opacity: 1; transform: translateY(0); }
 }
+
+/* ========================================================
+   MOTOR DE REALIDAD AUMENTADA EN CÁMARA EN VIVO (100% COMPATIBLE ANDROID / S25U)
+   ======================================================== */
+
+.ar-camera-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 1;
+  display: none;
+  background: #000;
+}
+
+.viewer-wrapper.camera-ar-active {
+  background: #000;
+}
+
+.viewer-wrapper.camera-ar-active .ar-camera-video {
+  display: block;
+}
+
+.ar-model-stage {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 5;
+  transform-origin: center center;
+  will-change: transform;
+}
+
+.ar-drag-layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 15;
+  touch-action: none;
+  cursor: grab;
+}
+
+.ar-drag-layer:active {
+  cursor: grabbing;
+}
+
+.btn-close-ar {
+  background: rgba(239, 68, 68, 0.92);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+  padding: 0.45rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(8px);
+}
+
+.camera-ar-hud {
+  position: absolute;
+  bottom: 1.4rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 60;
+  width: calc(100% - 1.5rem);
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.ar-hud-hint {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #f8fafc;
+  font-size: 0.78rem;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  border-radius: 9999px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.45);
+}
+
+.ar-hud-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  background: rgba(15, 17, 23, 0.9);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  border-radius: 9999px;
+  padding: 0.35rem 0.5rem;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+}
+
+.ar-hud-btn {
+  background: transparent;
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 9999px;
+  padding: 0.45rem 0.8rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.ar-hud-btn.active {
+  background: var(--accent);
+  color: #0f1117;
+  font-weight: 700;
+  box-shadow: 0 2px 10px rgba(56, 189, 248, 0.4);
+}
+
+.ar-hud-btn-icon {
+  padding: 0.45rem 0.7rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.ar-hud-btn-icon:active {
+  background: var(--accent);
+  color: #0f1117;
+}
+
+.ar-hud-divider {
+  width: 1px;
+  height: 20px;
+  background: var(--border);
+  margin: 0 0.15rem;
+}
+
+.android-native-bar-inline {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-scene-viewer-sm {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #94a3b8;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  padding: 0.3rem 0.75rem;
+  border-radius: 9999px;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+}
+
