@@ -18,7 +18,7 @@ const canonicalModels = [
     filename: 'cute-wob.glb',
     title: 'Cute Wob - Fátima Nevárez',
     format: 'GLB',
-    realScale: '45 cm'
+    realScale: '75 cm'
   },
   {
     filename: 'nessie.glb',
